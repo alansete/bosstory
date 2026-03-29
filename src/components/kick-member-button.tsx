@@ -38,7 +38,7 @@ export function KickMemberButton({
 
   if (confirming) {
     return (
-      <div className="absolute inset-0 z-10 rounded-lg bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center gap-3 p-4">
+      <div className="flex flex-col items-center gap-2 w-full">
         <p className="text-xs text-white/70 text-center">
           Remove <span className="font-semibold text-white">{characterName}</span>?
         </p>
@@ -48,7 +48,7 @@ export function KickMemberButton({
             disabled={loading}
             className="text-xs px-3 py-1.5 rounded-md bg-red-500/80 text-white hover:bg-red-500 transition-colors active:scale-95"
           >
-            {loading ? "Removing..." : "Remove"}
+            {loading ? "..." : "Remove"}
           </button>
           <button
             onClick={() => setConfirming(false)}
@@ -64,7 +64,7 @@ export function KickMemberButton({
   return (
     <button
       onClick={() => setConfirming(true)}
-      className="size-6 rounded-full bg-white/10 hover:bg-red-500/30 flex items-center justify-center text-white/30 hover:text-red-400 transition-colors active:scale-90"
+      className="absolute top-2 right-2 size-6 rounded-full bg-white/10 hover:bg-red-500/30 flex items-center justify-center text-white/30 hover:text-red-400 transition-colors active:scale-90"
       title={`Remove ${characterName}`}
     >
       <X weight="bold" className="size-3" />

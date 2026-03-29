@@ -3,7 +3,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { ResetTimePicker } from "@/components/reset-time-picker";
-import { KickMemberButton } from "@/components/kick-member-button";
+import { PartyMemberCard } from "@/components/party-member-card";
 import { CompleteRunButton } from "@/components/complete-run-button";
 import { AddMemberSelect } from "@/components/add-member-select";
 import { ScheduleBanner } from "@/components/schedule-banner";
@@ -131,48 +131,18 @@ export default async function PartyDetailPage({
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 {party.members.map((m) => (
-                  <div
+                  <PartyMemberCard
                     key={m.id}
-                    className="group/m relative rounded-lg bg-black/40 border border-white/8 backdrop-blur-sm p-5 flex flex-col items-center text-center hover:border-white/20 transition-all"
-                  >
-                    {/* Character avatar */}
-                    <div className="relative h-36 sm:h-44 w-full mb-4 flex items-center justify-center">
-                      {m.character.imageUrl ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={m.character.imageUrl}
-                          alt={m.character.name}
-                          className="h-full object-contain drop-shadow-[0_4px_20px_rgba(255,255,255,0.08)]"
-                        />
-                      ) : (
-                        <div className="size-24 rounded-full bg-white/10 flex items-center justify-center">
-                          <span className="text-3xl font-bold font-mono text-white/60">
-                            {m.character.level}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
-                    <p className="font-semibold text-white text-base tracking-tight truncate w-full">
-                      {m.character.name}
-                    </p>
-                    <p className="text-sm text-white/50 mt-1">
-                      Lv.{m.character.level} {m.character.className}
-                    </p>
-                    <p className="text-xs text-white/25 mt-0.5">
-                      {m.character.world} / {m.character.user.name}
-                    </p>
-
-                    {isCreator && (
-                      <div className="absolute top-2 right-2">
-                        <KickMemberButton
-                          partyId={party.id}
-                          memberId={m.id}
-                          characterName={m.character.name}
-                        />
-                      </div>
-                    )}
-                  </div>
+                    partyId={party.id}
+                    memberId={m.id}
+                    name={m.character.name}
+                    level={m.character.level}
+                    className={m.character.className}
+                    world={m.character.world}
+                    ownerName={m.character.user.name || "?"}
+                    imageUrl={m.character.imageUrl}
+                    isCreator={isCreator}
+                  />
                 ))}
 
                 {/* Empty slots */}
