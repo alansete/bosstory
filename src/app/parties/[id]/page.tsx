@@ -9,6 +9,7 @@ import { KickMemberButton } from "@/components/kick-member-button";
 import { CompleteRunButton } from "@/components/complete-run-button";
 import { AddMemberSelect } from "@/components/add-member-select";
 import { CheckCircle, Clock, Info } from "@phosphor-icons/react/dist/ssr";
+import { CountdownTimer } from "@/components/countdown-timer";
 
 function formatResetRelative(date: Date): string {
   const d = new Date(date);
@@ -141,6 +142,11 @@ export default async function PartyDetailPage({
                           .replace("GMT", "UTC")}
                       </span>
                     </div>
+                    {hasActiveRun && (
+                      <CountdownTimer
+                        targetDate={party.scheduledDate.toISOString()}
+                      />
+                    )}
                   </div>
                   {isCreator && hasActiveRun && (
                     <CompleteRunButton partyId={party.id} />

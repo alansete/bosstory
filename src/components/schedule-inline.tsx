@@ -1,10 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { Timer } from "@phosphor-icons/react";
+
+function useCountdown(target: string | null) {
+  const [now, setNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    if (!target) return;
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [target]);
+
+  if (!target) return null;
+  const diff = new Date(target).getTime() - now;
+  if (diff <= 0) return "now";
+
+  const h = Math.floor(diff / 3600000);
+  const m = Math.floor((diff / 60000) % 60);
+  const s = Math.floor((diff / 1000) % 60);
+  if (h >= 24) {
+    const d = Math.floor(h / 24);
+    return `${d}d ${h % 24}h`;
+  }
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+}
 
 export function ScheduleInline({
   partyId,
@@ -21,6 +45,7 @@ export function ScheduleInline({
     currentSchedule ? currentSchedule.slice(0, 16) : ""
   );
   const [loading, setLoading] = useState(false);
+  const countdown = useCountdown(currentSchedule);
 
   const displayDate = currentSchedule
     ? new Date(currentSchedule).toLocaleDateString("en-US", {
@@ -54,14 +79,6 @@ export function ScheduleInline({
     }
   }
 
-  if (!isCreator) {
-    return (
-      <p className="text-sm text-muted-foreground">
-        {displayDate ? `Scheduled: ${displayDate}` : "No date set"}
-      </p>
-    );
-  }
-
   if (editing) {
     return (
       <div className="flex items-center gap-2">
@@ -85,13 +102,36 @@ export function ScheduleInline({
     );
   }
 
+  if (!displayDate) {
+    return isCreator ? (
+      <button
+        onClick={() => setEditing(true)}
+        className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
+      >
+        Set schedule
+      </button>
+    ) : (
+      <p className="text-xs text-zinc-600">No date set</p>
+    );
+  }
+
   return (
-    <button
-      onClick={() => setEditing(true)}
-      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-    >
-      {displayDate ? `Scheduled: ${displayDate}` : "Click to set schedule"}{" "}
-      <span className="text-xs opacity-50">(edit)</span>
-    </button>
+    <div className="flex items-center gap-3">
+      <span className="text-xs text-zinc-400">{displayDate}</span>
+      {countdown && (
+        <span className="flex items-center gap-1 text-[11px] font-mono text-emerald-400">
+          <Timer weight="bold" className="size-3" />
+          {countdown === "now" ? "Now!" : countdown}
+        </span>
+      )}
+      {isCreator && (
+        <button
+          onClick={() => setEditing(true)}
+          className="text-[10px] text-zinc-600 hover:text-zinc-400 transition-colors"
+        >
+          edit
+        </button>
+      )}
+    </div>
   );
 }
