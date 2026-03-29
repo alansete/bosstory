@@ -35,20 +35,10 @@ export default async function BossesPage() {
             <img
               src={boss.bgUrl || boss.imageUrl}
               alt=""
-              className="absolute inset-0 w-full h-full object-cover opacity-60"
+              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-
-            {boss.gifUrl && (
-              <div className="absolute inset-0 flex items-center justify-center">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={boss.gifUrl}
-                  alt={boss.name}
-                  className="h-2/3 object-contain drop-shadow-[0_0_20px_rgba(0,0,0,0.8)] group-hover:scale-110 transition-transform duration-300 mix-blend-multiply"
-                />
-              </div>
-            )}
+            <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
 
             <div className="absolute bottom-0 left-0 right-0 p-3">
               <h3 className="text-sm font-semibold text-white tracking-tight">
