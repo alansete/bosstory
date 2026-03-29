@@ -37,8 +37,8 @@ export default async function AllCharactersPage() {
   return (
     <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="flex items-baseline justify-between mb-8">
-        <h1 className="text-3xl tracking-tighter font-bold">
-          All Characters
+        <h1 className="text-2xl font-semibold tracking-tight">
+          Players
         </h1>
         <span className="text-sm font-mono text-zinc-500">
           {characters.length} registered

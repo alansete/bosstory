@@ -8,11 +8,11 @@ export async function Navbar() {
 
   const links = [
     { href: "/bosses", label: "Bosses" },
-    { href: "/characters/all", label: "Roster" },
+    { href: "/characters/all", label: "Players" },
     ...(session
       ? [
           { href: "/parties", label: "Parties" },
-          { href: "/characters", label: "Characters" },
+          { href: "/characters", label: "My Characters" },
         ]
       : []),
   ];

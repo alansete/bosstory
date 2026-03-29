@@ -1,5 +1,12 @@
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { BossCard } from "@/components/boss-card";
+
+const diffColor: Record<string, string> = {
+  Normal: "text-emerald-400",
+  Hard: "text-amber-400",
+  Chaos: "text-red-400",
+  Extreme: "text-rose-300",
+};
 
 export default async function BossesPage() {
   const bosses = await prisma.boss.findMany({
@@ -17,9 +24,48 @@ export default async function BossesPage() {
         <h1 className="text-2xl font-semibold tracking-tight">Bosses</h1>
         <span className="text-xs font-mono text-muted-foreground">{bosses.length}</span>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
         {bosses.map((boss) => (
-          <BossCard key={boss.id} boss={boss} activeParties={boss.parties.length} />
+          <Link
+            key={boss.id}
+            href={`/bosses/${boss.id}`}
+            className="group relative block aspect-square rounded-lg overflow-hidden bg-muted active:scale-[0.98] transition-transform"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={boss.bgUrl || boss.imageUrl}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover opacity-60"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
+            {boss.gifUrl && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={boss.gifUrl}
+                  alt={boss.name}
+                  className="h-2/3 object-contain drop-shadow-[0_0_20px_rgba(0,0,0,0.8)] group-hover:scale-110 transition-transform duration-300"
+                />
+              </div>
+            )}
+
+            <div className="absolute bottom-0 left-0 right-0 p-3">
+              <h3 className="text-sm font-semibold text-white tracking-tight">
+                {boss.name}
+              </h3>
+              <div className="flex items-center gap-2 mt-0.5">
+                <span className={`text-[11px] font-semibold ${diffColor[boss.difficulty] || "text-white/50"}`}>
+                  {boss.difficulty}
+                </span>
+                {boss.parties.length > 0 && (
+                  <span className="text-[11px] text-white/30 font-mono">
+                    {boss.parties.length} {boss.parties.length === 1 ? "party" : "parties"}
+                  </span>
+                )}
+              </div>
+            </div>
+          </Link>
         ))}
       </div>
     </div>
