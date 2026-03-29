@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { X } from "@phosphor-icons/react";
 
 export function KickMemberButton({
   partyId,
@@ -26,7 +26,7 @@ export function KickMemberButton({
         { method: "DELETE" }
       );
       if (!res.ok) throw new Error("Failed");
-      toast.success(`${characterName} removed from party`);
+      toast.success(`${characterName} removed`);
       router.refresh();
     } catch {
       toast.error("Failed to kick member");
@@ -36,14 +36,17 @@ export function KickMemberButton({
   }
 
   return (
-    <Button
-      variant="ghost"
-      size="sm"
+    <button
       onClick={handleKick}
       disabled={loading}
-      className="text-xs text-destructive/70 hover:text-destructive opacity-0 group-hover/member:opacity-100 transition-opacity"
+      className="size-6 rounded-full bg-white/10 hover:bg-red-500/30 flex items-center justify-center text-white/30 hover:text-red-400 transition-colors active:scale-90"
+      title={`Remove ${characterName}`}
     >
-      {loading ? "..." : "Kick"}
-    </Button>
+      {loading ? (
+        <span className="text-[10px]">...</span>
+      ) : (
+        <X weight="bold" className="size-3" />
+      )}
+    </button>
   );
 }

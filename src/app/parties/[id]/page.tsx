@@ -6,18 +6,7 @@ import { ResetTimePicker } from "@/components/reset-time-picker";
 import { KickMemberButton } from "@/components/kick-member-button";
 import { CompleteRunButton } from "@/components/complete-run-button";
 import { AddMemberSelect } from "@/components/add-member-select";
-import { CountdownTimer } from "@/components/countdown-timer";
-
-function resetLabel(date: Date): string {
-  const d = new Date(date);
-  const utcDay = d.getUTCDay();
-  const reset = new Date(d);
-  reset.setUTCDate(d.getUTCDate() - ((utcDay + 3) % 7));
-  reset.setUTCHours(0, 0, 0, 0);
-  const h = Math.round((date.getTime() - reset.getTime()) / 3600000);
-  if (h === 0) return "Reset";
-  return h > 0 ? `Reset +${h}h` : `Reset ${h}h`;
-}
+import { ScheduleBanner } from "@/components/schedule-banner";
 
 export default async function PartyDetailPage({
   params,
@@ -103,31 +92,10 @@ export default async function PartyDetailPage({
         {party.scheduledDate && (
           <div className="mb-6 px-4 py-3 rounded-lg bg-white/5 border border-white/10 backdrop-blur-sm">
             <div className="flex flex-wrap items-center justify-between gap-4">
-              <div>
-                <p className="text-[10px] uppercase tracking-widest text-white/30 mb-1">
-                  {hasActiveRun ? "Next Run" : "Completed"}
-                </p>
-                <p className="text-lg font-semibold text-white tracking-tight">
-                  {new Date(party.scheduledDate).toLocaleDateString("en-US", {
-                    weekday: "long",
-                    month: "long",
-                    day: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </p>
-                <div className="flex gap-4 mt-1 text-xs font-mono text-white/30">
-                  <span>{resetLabel(new Date(party.scheduledDate))}</span>
-                  <span>
-                    {new Date(party.scheduledDate).toUTCString().slice(0, -4)} UTC
-                  </span>
-                </div>
-                {hasActiveRun && (
-                  <div className="mt-2">
-                    <CountdownTimer targetDate={party.scheduledDate.toISOString()} />
-                  </div>
-                )}
-              </div>
+              <ScheduleBanner
+                scheduledDate={party.scheduledDate.toISOString()}
+                isActive={hasActiveRun}
+              />
               {isCreator && hasActiveRun && (
                 <CompleteRunButton partyId={party.id} />
               )}
