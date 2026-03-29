@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { name, className, level, world } = await req.json();
+  const { name, className, level, world, imageUrl } = await req.json();
 
   if (!name || !className || !level || !world) {
     return NextResponse.json(
@@ -23,6 +23,7 @@ export async function POST(req: NextRequest) {
       className,
       level: parseInt(level),
       world,
+      imageUrl: imageUrl || null,
       userId: session.user.id,
     },
   });

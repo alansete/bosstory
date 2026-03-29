@@ -60,6 +60,7 @@ model Character {
   className    String
   level        Int
   world        String
+  imageUrl     String?
   userId       String
   user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   partyMembers PartyMember[]

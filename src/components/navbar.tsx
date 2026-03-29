@@ -30,12 +30,20 @@ export async function Navbar() {
                 Characters
               </Link>
               {session && (
-                <Link
-                  href="/characters"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  My Characters
-                </Link>
+                <>
+                  <Link
+                    href="/parties"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    My Parties
+                  </Link>
+                  <Link
+                    href="/characters"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    My Characters
+                  </Link>
+                </>
               )}
             </div>
           </div>

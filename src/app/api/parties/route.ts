@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { bossId } = await req.json();
+  const { bossId, scheduledDate } = await req.json();
 
   if (!bossId) {
     return NextResponse.json(
@@ -26,6 +26,7 @@ export async function POST(req: NextRequest) {
     data: {
       bossId,
       creatorId: session.user.id,
+      scheduledDate: scheduledDate ? new Date(scheduledDate) : undefined,
     },
   });
 
