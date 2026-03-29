@@ -31,7 +31,7 @@ export const BOSSES = [
     id: "chaos-kalos",
     name: "Chaos Kalos",
     difficulty: "Chaos",
-    imageUrl: "/bosses/kalos.png",
+    imageUrl: "/bosses/kalos.gif",
     maxPartySize: 6,
   },
   {
