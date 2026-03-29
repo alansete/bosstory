@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { Badge } from "@/components/ui/badge";
@@ -48,11 +47,11 @@ export default async function PartyDetailPage({
     <div className="relative min-h-[calc(100vh-4rem)]">
       {/* Boss Background */}
       <div className="absolute inset-0 z-0">
-        <Image
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src={party.boss.imageUrl}
           alt={party.boss.name}
-          fill
-          className="object-cover opacity-15 blur-sm"
+          className="absolute inset-0 w-full h-full object-cover opacity-15 blur-sm"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/80 to-background" />
       </div>

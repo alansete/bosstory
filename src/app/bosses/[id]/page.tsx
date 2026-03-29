@@ -1,10 +1,8 @@
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CreatePartyButton } from "@/components/create-party-button";
 
@@ -40,11 +38,11 @@ export default async function BossDetailPage({
     <div className="relative min-h-[calc(100vh-4rem)]">
       {/* Boss Background */}
       <div className="absolute inset-0 z-0">
-        <Image
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src={boss.imageUrl}
           alt={boss.name}
-          fill
-          className="object-cover opacity-20 blur-sm"
+          className="absolute inset-0 w-full h-full object-cover opacity-20 blur-sm"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/80 to-background" />
       </div>
@@ -53,11 +51,11 @@ export default async function BossDetailPage({
         {/* Boss Header */}
         <div className="flex flex-col md:flex-row gap-8 mb-12">
           <div className="relative w-full md:w-80 h-64 rounded-xl overflow-hidden shrink-0">
-            <Image
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src={boss.imageUrl}
               alt={boss.name}
-              fill
-              className="object-cover"
+              className="absolute inset-0 w-full h-full object-cover"
             />
           </div>
           <div className="flex flex-col justify-end">
