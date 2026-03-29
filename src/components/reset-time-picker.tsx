@@ -121,13 +121,13 @@ export function ResetTimePicker({
         <div className="flex gap-1 ml-auto">
           <button
             onClick={() => setMode("preset")}
-            className={`text-xs px-2 py-1 rounded ${mode === "preset" ? "bg-purple-500/20 text-purple-300" : "text-muted-foreground hover:text-foreground"}`}
+            className={`text-xs px-2 py-1 rounded ${mode === "preset" ? "bg-emerald-500/15 text-emerald-400" : "text-muted-foreground hover:text-foreground"}`}
           >
             Reset Timing
           </button>
           <button
             onClick={() => setMode("custom")}
-            className={`text-xs px-2 py-1 rounded ${mode === "custom" ? "bg-purple-500/20 text-purple-300" : "text-muted-foreground hover:text-foreground"}`}
+            className={`text-xs px-2 py-1 rounded ${mode === "custom" ? "bg-emerald-500/15 text-emerald-400" : "text-muted-foreground hover:text-foreground"}`}
           >
             Custom
           </button>
@@ -152,8 +152,8 @@ export function ResetTimePicker({
                   onClick={() => selectPreset(p.offset)}
                   className={`text-xs py-2 px-2 rounded-lg border transition-all ${
                     isSelected
-                      ? "border-purple-500 bg-purple-500/20 text-purple-300"
-                      : "border-border hover:border-purple-500/50 text-muted-foreground hover:text-foreground"
+                      ? "border-emerald-500 bg-emerald-500/15 text-emerald-400"
+                      : "border-border hover:border-emerald-500/50 text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   {p.label}
@@ -189,7 +189,7 @@ export function ResetTimePicker({
         <div className="bg-muted/50 rounded-lg p-3 space-y-1">
           <div className="flex justify-between text-xs">
             <span className="text-muted-foreground">Reset</span>
-            <span className="font-mono text-purple-300">
+            <span className="font-mono text-emerald-400">
               {formatResetRelative(selectedDate)}
             </span>
           </div>

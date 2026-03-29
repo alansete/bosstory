@@ -67,7 +67,7 @@ export default async function MyPartiesPage() {
             return (
               <Card
                 key={party.id}
-                className="overflow-hidden hover:border-purple-500/50 transition-all"
+                className="overflow-hidden hover:border-zinc-600 transition-all"
               >
                 <div className="flex">
                   {/* Boss image sidebar */}
@@ -84,7 +84,7 @@ export default async function MyPartiesPage() {
                       <div>
                         <Link
                           href={`/parties/${party.id}`}
-                          className="font-bold text-lg hover:text-purple-400 transition-colors"
+                          className="font-bold text-lg hover:text-emerald-400 transition-colors"
                         >
                           {party.boss.name}
                         </Link>
@@ -99,7 +99,7 @@ export default async function MyPartiesPage() {
                             {party.members.length}/6 members
                           </Badge>
                           {isCreator && (
-                            <Badge className="text-xs bg-purple-500/20 text-purple-400 border-purple-500/30">
+                            <Badge className="text-xs bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
                               Creator
                             </Badge>
                           )}

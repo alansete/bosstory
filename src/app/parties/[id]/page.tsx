@@ -8,15 +8,13 @@ import { ResetTimePicker } from "@/components/reset-time-picker";
 import { KickMemberButton } from "@/components/kick-member-button";
 import { CompleteRunButton } from "@/components/complete-run-button";
 import { AddMemberSelect } from "@/components/add-member-select";
+import { CheckCircle, Clock, Info } from "@phosphor-icons/react/dist/ssr";
 
 function formatResetRelative(date: Date): string {
-  // Find next Thursday 00:00 UTC from the scheduled date
   const d = new Date(date);
   const utcDay = d.getUTCDay();
-  let daysToThursday = (4 - utcDay + 7) % 7;
-  if (daysToThursday === 0 && d.getUTCHours() > 0) daysToThursday = 0;
   const reset = new Date(d);
-  reset.setUTCDate(d.getUTCDate() - ((utcDay + 3) % 7)); // go back to prev/curr Thursday
+  reset.setUTCDate(d.getUTCDate() - ((utcDay + 3) % 7));
   reset.setUTCHours(0, 0, 0, 0);
   const diffMs = date.getTime() - reset.getTime();
   const diffH = Math.round(diffMs / 3600000);
@@ -55,7 +53,6 @@ export default async function PartyDetailPage({
   const isCompleted = !!party.completedAt;
   const canSchedule = isCreator && (!party.scheduledDate || isCompleted);
 
-  // Available characters to add
   const memberCharIds = party.members.map((m) => m.characterId);
   const availableCharacters = session?.user
     ? await prisma.character.findMany({
@@ -69,62 +66,60 @@ export default async function PartyDetailPage({
     : [];
 
   return (
-    <div className="relative min-h-[calc(100vh-4rem)]">
+    <div className="relative min-h-[calc(100dvh-3.5rem)]">
       {/* Boss Background */}
       <div className="absolute inset-0 z-0">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={party.boss.imageUrl}
           alt={party.boss.name}
-          className="absolute inset-0 w-full h-full object-cover opacity-15 blur-sm"
+          className="absolute inset-0 w-full h-full object-cover opacity-10 blur-sm"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/80 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/85 to-background" />
       </div>
 
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="relative z-10 max-w-[1100px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header */}
         <div className="mb-10">
-          <div className="flex items-center gap-3 mb-2">
-            <Badge
-              variant="outline"
-              className="text-purple-400 border-purple-500/30"
-            >
+          <div className="flex items-center gap-2 mb-3">
+            <Badge variant="outline" className="text-zinc-400 border-zinc-700">
               {party.boss.difficulty}
             </Badge>
             {hasActiveRun && (
-              <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
-                Run Scheduled
+              <Badge className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <Clock weight="bold" className="size-3 mr-1" />
+                Scheduled
               </Badge>
             )}
             {isCompleted && (
-              <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">
+              <Badge className="bg-zinc-500/10 text-zinc-400 border border-zinc-600">
+                <CheckCircle weight="bold" className="size-3 mr-1" />
                 Completed
               </Badge>
             )}
           </div>
-          <h1 className="text-4xl font-heading font-bold mb-1">
+          <h1 className="text-4xl md:text-5xl tracking-tighter font-bold leading-none">
             {party.boss.name}
           </h1>
-          <p className="text-muted-foreground">
-            Created by{" "}
-            <span className="text-foreground">{party.creator.name}</span>
+          <p className="text-sm text-zinc-500 mt-2">
+            Created by {party.creator.name}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left: Members */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Run schedule banner */}
+            {/* Schedule banner */}
             {party.scheduledDate && (
               <div
-                className={`rounded-xl p-4 border ${hasActiveRun ? "bg-green-500/5 border-green-500/20" : "bg-blue-500/5 border-blue-500/20"}`}
+                className={`rounded-lg p-4 border ${hasActiveRun ? "border-emerald-500/20 bg-emerald-500/5" : "border-zinc-700 bg-zinc-800/30"}`}
               >
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-4">
                   <div>
-                    <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">
-                      {hasActiveRun ? "Next Run" : "Last Run (Completed)"}
+                    <p className="text-[10px] uppercase tracking-widest text-zinc-500 mb-1">
+                      {hasActiveRun ? "Next Run" : "Last Run"}
                     </p>
-                    <p className="font-heading font-bold text-lg">
+                    <p className="font-semibold tracking-tight text-lg">
                       {new Date(party.scheduledDate).toLocaleDateString(
                         "en-US",
                         {
@@ -136,12 +131,11 @@ export default async function PartyDetailPage({
                         }
                       )}
                     </p>
-                    <div className="flex gap-4 mt-1 text-xs text-muted-foreground">
+                    <div className="flex gap-4 mt-1 text-xs font-mono text-zinc-500">
                       <span>
                         {formatResetRelative(new Date(party.scheduledDate))}
                       </span>
                       <span>
-                        UTC:{" "}
                         {new Date(party.scheduledDate)
                           .toUTCString()
                           .replace("GMT", "UTC")}
@@ -149,32 +143,27 @@ export default async function PartyDetailPage({
                     </div>
                   </div>
                   {isCreator && hasActiveRun && (
-                    <div className="shrink-0 ml-4">
-                      <CompleteRunButton partyId={party.id} />
-                    </div>
+                    <CompleteRunButton partyId={party.id} />
                   )}
                 </div>
               </div>
             )}
 
-            {/* Party Members */}
+            {/* Members */}
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="font-heading font-bold text-xl">
+                <h2 className="text-lg font-semibold tracking-tight">
                   Party Members
                 </h2>
-                <Badge
-                  variant={isFull ? "destructive" : "secondary"}
-                  className="font-heading"
-                >
+                <span className="text-sm font-mono text-zinc-500">
                   {party.members.length}/{party.boss.maxPartySize}
-                </Badge>
+                </span>
               </div>
 
               {party.members.length === 0 ? (
-                <div className="text-center py-12 border border-dashed border-border rounded-xl">
-                  <p className="text-muted-foreground">
-                    No members yet. Add characters to get started!
+                <div className="py-16 border border-dashed border-zinc-700 rounded-lg text-center">
+                  <p className="text-sm text-zinc-500">
+                    No members yet. Add characters to get started.
                   </p>
                 </div>
               ) : (
@@ -182,40 +171,34 @@ export default async function PartyDetailPage({
                   {party.members.map((member) => (
                     <div
                       key={member.id}
-                      className="group/member relative flex items-center gap-3 p-3 rounded-xl bg-card border border-border hover:border-purple-500/30 transition-all"
+                      className="group/member flex items-center gap-3 p-3 rounded-lg bg-zinc-900/50 border border-border hover:border-zinc-600 transition-all duration-200"
                     >
-                      {/* Avatar */}
-                      <div className="relative w-14 h-14 shrink-0 rounded-lg bg-gradient-to-br from-purple-900/40 to-indigo-900/40 flex items-center justify-center overflow-hidden">
+                      <div className="relative size-12 shrink-0 rounded-lg bg-zinc-800 flex items-center justify-center overflow-hidden">
                         {member.character.imageUrl ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img
                             src={member.character.imageUrl}
                             alt={member.character.name}
-                            className="h-12 object-contain"
+                            className="h-10 object-contain"
                           />
                         ) : (
-                          <span className="text-lg font-bold text-purple-300">
+                          <span className="text-sm font-bold font-mono text-zinc-400">
                             {member.character.level}
                           </span>
                         )}
                       </div>
-
-                      {/* Info */}
                       <div className="flex-1 min-w-0">
-                        <p className="font-heading font-semibold truncate">
+                        <p className="font-semibold text-sm tracking-tight truncate">
                           {member.character.name}
                         </p>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-xs text-zinc-500">
                           Lv.{member.character.level}{" "}
                           {member.character.className}
                         </p>
-                        <p className="text-[10px] text-muted-foreground/60">
-                          {member.character.world} &middot;{" "}
-                          {member.character.user.name}
+                        <p className="text-[10px] text-zinc-600">
+                          {member.character.world} / {member.character.user.name}
                         </p>
                       </div>
-
-                      {/* Kick button */}
                       {isCreator && (
                         <KickMemberButton
                           partyId={party.id}
@@ -230,13 +213,12 @@ export default async function PartyDetailPage({
             </div>
           </div>
 
-          {/* Right: Actions sidebar */}
-          <div className="space-y-6">
-            {/* Add Member */}
+          {/* Right sidebar */}
+          <div className="space-y-4">
             {session?.user && !isFull && (
-              <Card>
+              <Card className="border-zinc-800">
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-heading">
+                  <CardTitle className="text-sm tracking-tight">
                     Add Member
                   </CardTitle>
                 </CardHeader>
@@ -257,17 +239,16 @@ export default async function PartyDetailPage({
               </Card>
             )}
 
-            {/* Schedule */}
             {isCreator && (
-              <Card>
+              <Card className="border-zinc-800">
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-heading">
-                    {canSchedule ? "Schedule Run" : "Run Scheduled"}
+                  <CardTitle className="text-sm tracking-tight">
+                    {canSchedule ? "Schedule Run" : "Run Active"}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   {hasActiveRun ? (
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-zinc-500">
                       Complete the current run before scheduling a new one.
                     </p>
                   ) : (
@@ -283,31 +264,34 @@ export default async function PartyDetailPage({
               </Card>
             )}
 
-            {/* Party info */}
-            <Card>
+            <Card className="border-zinc-800">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-heading">Info</CardTitle>
+                <CardTitle className="text-sm tracking-tight flex items-center gap-1.5">
+                  <Info weight="bold" className="size-3.5" />
+                  Info
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Boss</span>
+                  <span className="text-zinc-500">Boss</span>
                   <Link
                     href={`/bosses/${party.boss.id}`}
-                    className="hover:text-purple-400 transition-colors"
+                    className="text-zinc-300 hover:text-emerald-400 transition-colors"
                   >
                     {party.boss.name}
                   </Link>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Max Size</span>
-                  <span>{party.boss.maxPartySize}</span>
+                  <span className="text-zinc-500">Max Size</span>
+                  <span className="font-mono">{party.boss.maxPartySize}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Created</span>
-                  <span>
+                  <span className="text-zinc-500">Created</span>
+                  <span className="font-mono text-xs">
                     {new Date(party.createdAt).toLocaleDateString("en-US", {
                       month: "short",
                       day: "numeric",
+                      year: "numeric",
                     })}
                   </span>
                 </div>

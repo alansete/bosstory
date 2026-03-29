@@ -61,7 +61,7 @@ export default async function BossDetailPage({
           <div className="flex flex-col justify-end">
             <Badge
               variant="outline"
-              className="w-fit mb-2 text-purple-400 border-purple-500/30"
+              className="w-fit mb-2 text-zinc-400 border-zinc-700"
             >
               {boss.difficulty}
             </Badge>
@@ -89,7 +89,7 @@ export default async function BossDetailPage({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {boss.parties.map((party) => (
               <Link key={party.id} href={`/parties/${party.id}`}>
-                <Card className="hover:border-purple-500/50 transition-all">
+                <Card className="hover:border-zinc-600 transition-all">
                   <CardHeader>
                     <div className="flex justify-between items-start">
                       <div>
