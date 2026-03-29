@@ -2,10 +2,8 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { Badge } from "@/components/ui/badge";
 import { AddCharacterForm } from "@/components/add-character-form";
 import { DeleteCharacterButton } from "@/components/delete-character-button";
-import { Sword, ArrowRight } from "@phosphor-icons/react/dist/ssr";
 
 export default async function MyCharactersPage() {
   const session = await auth();
@@ -15,118 +13,75 @@ export default async function MyCharactersPage() {
     where: { userId: session.user.id },
     include: {
       partyMembers: {
-        include: {
-          party: {
-            include: { boss: true },
-          },
-        },
+        include: { party: { include: { boss: true } } },
       },
     },
     orderBy: { level: "desc" },
   });
 
   return (
-    <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
       <div className="flex items-baseline justify-between mb-8">
-        <h1 className="text-3xl tracking-tighter font-bold">My Roster</h1>
-        <span className="text-sm font-mono text-zinc-500">
-          {characters.length} characters
-        </span>
+        <h1 className="text-2xl font-semibold tracking-tight">Characters</h1>
+        <span className="text-xs font-mono text-muted-foreground">{characters.length}</span>
       </div>
 
       <AddCharacterForm />
 
       {characters.length === 0 ? (
-        <div className="mt-10 py-20 border border-dashed border-zinc-700 rounded-lg text-center">
-          <p className="text-zinc-500 text-sm">
-            Your roster is empty. Search for a character above.
+        <div className="mt-8 py-20 rounded-lg border border-dashed border-border text-center">
+          <p className="text-sm text-muted-foreground">
+            Search for a character above to add it to your roster.
           </p>
         </div>
       ) : (
-        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="mt-8 divide-y divide-border">
           {characters.map((char) => (
             <div
               key={char.id}
-              className="group relative bg-card border border-border rounded-lg overflow-hidden hover:border-zinc-600 transition-all duration-200"
+              className="group flex items-center gap-4 py-3 first:pt-0"
             >
-              {/* Avatar area */}
-              <div className="relative h-32 bg-gradient-to-br from-zinc-900 via-zinc-800/80 to-zinc-900 flex items-center justify-center overflow-hidden">
+              {/* Avatar */}
+              <div className="size-10 shrink-0 rounded-md bg-muted overflow-hidden flex items-center justify-center">
                 {char.imageUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={char.imageUrl}
-                    alt={char.name}
-                    className="h-24 object-contain drop-shadow-lg group-hover:scale-110 transition-transform duration-300"
-                  />
+                  <img src={char.imageUrl} alt="" className="h-9 object-contain" />
                 ) : (
-                  <div className="size-16 rounded-full bg-zinc-700 flex items-center justify-center text-2xl font-bold font-mono text-zinc-300">
-                    {char.level}
-                  </div>
+                  <span className="text-xs font-mono font-bold text-muted-foreground">{char.level}</span>
                 )}
-                <div className="absolute top-2.5 left-2.5 bg-zinc-950/70 backdrop-blur-sm rounded px-2 py-0.5">
-                  <span className="text-xs font-mono font-semibold text-emerald-400">
-                    Lv.{char.level}
-                  </span>
+              </div>
+
+              {/* Name + meta */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium truncate">{char.name}</span>
+                  <span className="text-xs text-muted-foreground">Lv.{char.level}</span>
                 </div>
-                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <DeleteCharacterButton
-                    characterId={char.id}
-                    characterName={char.name}
-                  />
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <span>{char.className}</span>
+                  <span className="text-border">|</span>
+                  <span>{char.world}</span>
                 </div>
               </div>
 
-              {/* Info */}
-              <div className="p-3.5">
-                <h3 className="font-semibold tracking-tight truncate">
-                  {char.name}
-                </h3>
-                <div className="flex gap-1.5 mt-1.5">
-                  <Badge
-                    variant="outline"
-                    className="text-[11px] border-zinc-700 text-zinc-300"
+              {/* Parties */}
+              <div className="hidden sm:flex items-center gap-1.5">
+                {char.partyMembers.map((pm) => (
+                  <Link
+                    key={pm.id}
+                    href={`/parties/${pm.party.id}`}
+                    className="size-6 rounded overflow-hidden opacity-60 hover:opacity-100 transition-opacity"
+                    title={pm.party.boss.name}
                   >
-                    {char.className}
-                  </Badge>
-                  <Badge
-                    variant="secondary"
-                    className="text-[11px]"
-                  >
-                    {char.world}
-                  </Badge>
-                </div>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={pm.party.boss.imageUrl} alt={pm.party.boss.name} className="w-full h-full object-cover" />
+                  </Link>
+                ))}
+              </div>
 
-                {/* Party links */}
-                {char.partyMembers.length > 0 && (
-                  <div className="mt-3 pt-3 border-t border-border">
-                    <p className="text-[10px] uppercase tracking-widest text-zinc-600 mb-1.5 font-medium">
-                      Parties
-                    </p>
-                    <div className="flex flex-col gap-1">
-                      {char.partyMembers.map((pm) => (
-                        <Link
-                          key={pm.id}
-                          href={`/parties/${pm.party.id}`}
-                          className="group/link flex items-center gap-2 text-xs text-zinc-400 hover:text-emerald-400 transition-colors"
-                        >
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={pm.party.boss.imageUrl}
-                            alt={pm.party.boss.name}
-                            className="size-4 rounded object-cover"
-                          />
-                          <span className="truncate flex-1">
-                            {pm.party.boss.name}
-                          </span>
-                          <ArrowRight
-                            weight="bold"
-                            className="size-3 opacity-0 group-hover/link:opacity-100 transition-opacity"
-                          />
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                )}
+              {/* Delete */}
+              <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                <DeleteCharacterButton characterId={char.id} characterName={char.name} />
               </div>
             </div>
           ))}

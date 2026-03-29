@@ -2,8 +2,6 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CreatePartyButton } from "@/components/create-party-button";
 
 export default async function BossDetailPage({
@@ -13,7 +11,6 @@ export default async function BossDetailPage({
 }) {
   const { id } = await params;
   const session = await auth();
-
   const boss = await prisma.boss.findUnique({
     where: { id },
     include: {
@@ -21,108 +18,88 @@ export default async function BossDetailPage({
         where: { status: "open" },
         include: {
           creator: true,
-          members: {
-            include: {
-              character: true,
-            },
-          },
+          members: { include: { character: true } },
         },
         orderBy: { createdAt: "desc" },
       },
     },
   });
-
   if (!boss) notFound();
 
   return (
-    <div className="relative min-h-[calc(100vh-4rem)]">
-      {/* Boss Background */}
-      <div className="absolute inset-0 z-0">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={boss.imageUrl}
-          alt={boss.name}
-          className="absolute inset-0 w-full h-full object-cover opacity-20 blur-sm"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/80 to-background" />
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row gap-6 mb-10">
+        <div className="sm:w-64 aspect-[16/10] rounded-lg overflow-hidden bg-muted shrink-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={boss.imageUrl} alt={boss.name} className="w-full h-full object-cover" />
+        </div>
+        <div>
+          <span className="text-xs text-muted-foreground">{boss.difficulty}</span>
+          <h1 className="text-3xl font-bold tracking-tighter mt-1">{boss.name}</h1>
+          <p className="text-sm text-muted-foreground mt-2">
+            Max party size: {boss.maxPartySize}
+          </p>
+          {session?.user && (
+            <div className="mt-4">
+              <CreatePartyButton bossId={boss.id} bossName={boss.name} />
+            </div>
+          )}
+        </div>
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Boss Header */}
-        <div className="flex flex-col md:flex-row gap-8 mb-12">
-          <div className="relative w-full md:w-80 h-64 rounded-xl overflow-hidden shrink-0">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={boss.imageUrl}
-              alt={boss.name}
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-          </div>
-          <div className="flex flex-col justify-end">
-            <Badge
-              variant="outline"
-              className="w-fit mb-2 text-zinc-400 border-zinc-700"
-            >
-              {boss.difficulty}
-            </Badge>
-            <h1 className="text-4xl font-bold mb-2">{boss.name}</h1>
-            <p className="text-muted-foreground mb-4">
-              Max Party Size: {boss.maxPartySize} members
-            </p>
-            {session?.user && (
-              <CreatePartyButton bossId={boss.id} bossName={boss.name} />
-            )}
-          </div>
-        </div>
-
-        {/* Parties */}
-        <h2 className="text-2xl font-bold mb-6">
-          Active Parties ({boss.parties.length})
+      {/* Parties */}
+      <div>
+        <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4">
+          Active parties &middot; {boss.parties.length}
         </h2>
+
         {boss.parties.length === 0 ? (
-          <Card>
-            <CardContent className="p-8 text-center text-muted-foreground">
-              No active parties yet. Be the first to create one!
-            </CardContent>
-          </Card>
+          <div className="py-16 border border-dashed border-border rounded-lg text-center">
+            <p className="text-sm text-muted-foreground">No active parties.</p>
+          </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="divide-y divide-border">
             {boss.parties.map((party) => (
-              <Link key={party.id} href={`/parties/${party.id}`}>
-                <Card className="hover:border-zinc-600 transition-all">
-                  <CardHeader>
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <CardTitle className="text-lg">
-                          {party.creator.name}&apos;s Party
-                        </CardTitle>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {party.scheduledDate
-                            ? `Scheduled: ${new Date(party.scheduledDate).toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}`
-                            : "No date set"}
-                        </p>
-                      </div>
-                      <Badge variant="secondary">
-                        {party.members.length}/{boss.maxPartySize}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-wrap gap-2">
-                      {party.members.map((member) => (
-                        <Badge key={member.id} variant="outline">
-                          Lv.{member.character.level}{" "}
-                          {member.character.name}
-                        </Badge>
-                      ))}
-                      {party.members.length === 0 && (
-                        <span className="text-sm text-muted-foreground">
-                          No members yet
-                        </span>
+              <Link
+                key={party.id}
+                href={`/parties/${party.id}`}
+                className="flex items-center gap-4 py-3 hover:bg-muted/50 -mx-2 px-2 rounded transition-colors"
+              >
+                <div className="flex-1 min-w-0">
+                  <span className="text-sm font-medium">
+                    {party.creator.name}&apos;s party
+                  </span>
+                  <div className="text-xs text-muted-foreground mt-0.5">
+                    {party.scheduledDate
+                      ? new Date(party.scheduledDate).toLocaleDateString("en-US", {
+                          weekday: "short",
+                          month: "short",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })
+                      : "No date set"}
+                  </div>
+                </div>
+                <span className="text-xs font-mono text-muted-foreground">
+                  {party.members.length}/{boss.maxPartySize}
+                </span>
+                <div className="hidden sm:flex -space-x-1">
+                  {party.members.slice(0, 4).map((m) => (
+                    <div
+                      key={m.id}
+                      className="size-6 rounded-full bg-muted border-2 border-background overflow-hidden flex items-center justify-center"
+                    >
+                      {m.character.imageUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={m.character.imageUrl} alt="" className="h-5 object-contain" />
+                      ) : (
+                        <span className="text-[8px] font-mono text-muted-foreground">{m.character.level}</span>
                       )}
                     </div>
-                  </CardContent>
-                </Card>
+                  ))}
+                </div>
               </Link>
             ))}
           </div>

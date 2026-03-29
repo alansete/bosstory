@@ -119,7 +119,7 @@ export function ScheduleInline({
     <div className="flex items-center gap-3">
       <span className="text-xs text-zinc-400">{displayDate}</span>
       {countdown && (
-        <span className="flex items-center gap-1 text-[11px] font-mono text-emerald-400">
+        <span className="flex items-center gap-1 text-[11px] font-mono text-foreground">
           <Timer weight="bold" className="size-3" />
           {countdown === "now" ? "Now!" : countdown}
         </span>

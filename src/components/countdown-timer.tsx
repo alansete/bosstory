@@ -31,7 +31,7 @@ export function CountdownTimer({ targetDate }: { targetDate: string }) {
 
   if (!timeLeft) {
     return (
-      <div className="flex items-center gap-1.5 text-emerald-400 text-sm font-mono">
+      <div className="flex items-center gap-1.5 text-foreground text-sm font-mono">
         <Timer weight="bold" className="size-3.5" />
         <span>Run time!</span>
       </div>
