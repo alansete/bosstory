@@ -14,11 +14,11 @@ export function KickMemberButton({
   memberId: string;
   characterName: string;
 }) {
+  const [confirming, setConfirming] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   async function handleKick() {
-    if (!confirm(`Kick ${characterName} from the party?`)) return;
     setLoading(true);
     try {
       const res = await fetch(
@@ -32,21 +32,42 @@ export function KickMemberButton({
       toast.error("Failed to kick member");
     } finally {
       setLoading(false);
+      setConfirming(false);
     }
+  }
+
+  if (confirming) {
+    return (
+      <div className="absolute inset-0 z-10 rounded-lg bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center gap-3 p-4">
+        <p className="text-xs text-white/70 text-center">
+          Remove <span className="font-semibold text-white">{characterName}</span>?
+        </p>
+        <div className="flex gap-2">
+          <button
+            onClick={handleKick}
+            disabled={loading}
+            className="text-xs px-3 py-1.5 rounded-md bg-red-500/80 text-white hover:bg-red-500 transition-colors active:scale-95"
+          >
+            {loading ? "Removing..." : "Remove"}
+          </button>
+          <button
+            onClick={() => setConfirming(false)}
+            className="text-xs px-3 py-1.5 rounded-md bg-white/10 text-white/60 hover:bg-white/20 transition-colors"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
     <button
-      onClick={handleKick}
-      disabled={loading}
+      onClick={() => setConfirming(true)}
       className="size-6 rounded-full bg-white/10 hover:bg-red-500/30 flex items-center justify-center text-white/30 hover:text-red-400 transition-colors active:scale-90"
       title={`Remove ${characterName}`}
     >
-      {loading ? (
-        <span className="text-[10px]">...</span>
-      ) : (
-        <X weight="bold" className="size-3" />
-      )}
+      <X weight="bold" className="size-3" />
     </button>
   );
 }

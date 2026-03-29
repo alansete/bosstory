@@ -7,6 +7,7 @@ import { KickMemberButton } from "@/components/kick-member-button";
 import { CompleteRunButton } from "@/components/complete-run-button";
 import { AddMemberSelect } from "@/components/add-member-select";
 import { ScheduleBanner } from "@/components/schedule-banner";
+import { DeletePartyButton } from "@/components/delete-party-button";
 
 export default async function PartyDetailPage({
   params,
@@ -70,11 +71,18 @@ export default async function PartyDetailPage({
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tighter text-white leading-none">
                 {party.boss.name}
               </h1>
-              <span className="text-sm text-white/40 font-mono">{party.boss.difficulty}</span>
+              <span className={`text-sm font-semibold ${party.boss.difficulty === "Extreme" ? "text-rose-300" : party.boss.difficulty === "Chaos" ? "text-red-400" : party.boss.difficulty === "Hard" ? "text-amber-400" : "text-emerald-400"}`}>
+                {party.boss.difficulty}
+              </span>
             </div>
-            <p className="text-sm text-white/40 mt-1">
-              by {party.creator.name}
-            </p>
+            <div className="flex items-center gap-4 mt-1">
+              <p className="text-sm text-white/40">
+                by {party.creator.name}
+              </p>
+              {isCreator && (
+                <DeletePartyButton partyId={party.id} bossName={party.boss.name} />
+              )}
+            </div>
           </div>
 
           {/* Boss GIF */}

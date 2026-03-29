@@ -3,6 +3,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { CreatePartyButton } from "@/components/create-party-button";
+import { getDifficultyColor } from "@/lib/difficulty";
 
 export default async function BossDetailPage({
   params,
@@ -52,7 +53,7 @@ export default async function BossDetailPage({
               </h1>
             </div>
             <div className="flex items-center gap-3 mt-2 text-sm text-white/40">
-              <span>{boss.difficulty}</span>
+              <span className={`font-semibold ${getDifficultyColor(boss.difficulty)}`}>{boss.difficulty}</span>
               <span className="text-white/15">|</span>
               <span>Max {boss.maxPartySize} players</span>
               <span className="text-white/15">|</span>

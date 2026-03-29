@@ -27,9 +27,7 @@ export async function PATCH(
 
   const updateData: Record<string, unknown> = {};
 
-  // Schedule a run
   if (body.scheduledDate !== undefined) {
-    // Can't schedule if there's an active (non-completed) scheduled run
     if (party.scheduledDate && !party.completedAt && body.scheduledDate) {
       return NextResponse.json(
         { error: "Complete the current run before scheduling a new one" },
@@ -39,13 +37,11 @@ export async function PATCH(
     updateData.scheduledDate = body.scheduledDate
       ? new Date(body.scheduledDate)
       : null;
-    // Reset completedAt when scheduling new run
     if (body.scheduledDate) {
       updateData.completedAt = null;
     }
   }
 
-  // Mark run as completed
   if (body.completeRun) {
     if (!party.scheduledDate) {
       return NextResponse.json(
@@ -62,4 +58,33 @@ export async function PATCH(
   });
 
   return NextResponse.json(updated);
+}
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { id } = await params;
+
+  const party = await prisma.party.findUnique({ where: { id } });
+  if (!party) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+  if (party.creatorId !== session.user.id) {
+    return NextResponse.json(
+      { error: "Only the creator can delete this party" },
+      { status: 403 }
+    );
+  }
+
+  // Delete members first, then party
+  await prisma.partyMember.deleteMany({ where: { partyId: id } });
+  await prisma.party.delete({ where: { id } });
+
+  return NextResponse.json({ ok: true });
 }
