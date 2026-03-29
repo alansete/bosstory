@@ -83,6 +83,7 @@ model Party {
   creatorId     String
   creator       User          @relation("PartyCreator", fields: [creatorId], references: [id])
   scheduledDate DateTime?
+  completedAt   DateTime?
   status        String        @default("open")
   members       PartyMember[]
   createdAt     DateTime      @default(now())
