@@ -91,7 +91,7 @@ export default async function PartyDetailPage({
             <img
               src={gifUrl}
               alt={party.boss.name}
-              className="h-32 lg:h-44 object-contain drop-shadow-[0_0_30px_rgba(0,0,0,0.8)]"
+              className="h-32 lg:h-44 object-contain drop-shadow-[0_0_30px_rgba(0,0,0,0.8)] mix-blend-multiply"
             />
           </div>
         </div>

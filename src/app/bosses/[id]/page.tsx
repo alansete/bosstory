@@ -70,7 +70,7 @@ export default async function BossDetailPage({
             <img
               src={gifUrl}
               alt={boss.name}
-              className="h-40 lg:h-56 object-contain drop-shadow-[0_0_30px_rgba(0,0,0,0.8)]"
+              className="h-40 lg:h-56 object-contain drop-shadow-[0_0_30px_rgba(0,0,0,0.8)] mix-blend-multiply"
             />
           </div>
         </div>

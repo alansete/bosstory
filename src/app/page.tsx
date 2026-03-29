@@ -59,7 +59,7 @@ export default async function Home() {
                   <img
                     src={boss.gifUrl}
                     alt={boss.name}
-                    className="h-2/3 object-contain drop-shadow-[0_0_20px_rgba(0,0,0,0.8)] group-hover:scale-110 transition-transform duration-300"
+                    className="h-2/3 object-contain drop-shadow-[0_0_20px_rgba(0,0,0,0.8)] group-hover:scale-110 transition-transform duration-300 mix-blend-multiply"
                   />
                 </div>
               )}
