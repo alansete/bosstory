@@ -9,6 +9,7 @@ export async function Navbar() {
   const links = [
     { href: "/bosses", label: "Bosses" },
     { href: "/characters/all", label: "Players" },
+    { href: "/manga", label: "Manga" },
     ...(session
       ? [
           { href: "/parties", label: "Parties" },

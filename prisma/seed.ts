@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 
 const BOSSES = [
   { id: "extreme-seren", name: "Extreme Seren", difficulty: "Extreme", imageUrl: "/bosses/bg/seren.png", bgUrl: "/bosses/bg/seren.png", gifUrl: "/bosses/gif/seren.gif", maxPartySize: 6 },
-  { id: "normal-baldrix", name: "Normal Baldrix", difficulty: "Normal", imageUrl: "/bosses/bg/baldrix.png", bgUrl: "/bosses/bg/baldrix.png", gifUrl: "/bosses/gif/baldrix.gif", maxPartySize: 6 },
+  { id: "normal-baldrix", name: "Normal Baldrix", difficulty: "Normal", imageUrl: "/bosses/bg/baldrix.gif", bgUrl: "/bosses/bg/baldrix.gif", gifUrl: "/bosses/gif/baldrix.gif", maxPartySize: 6 },
   { id: "hard-limbo", name: "Hard Limbo", difficulty: "Hard", imageUrl: "/bosses/bg/limbo.png", bgUrl: "/bosses/bg/limbo.png", gifUrl: "/bosses/gif/limbo.png", maxPartySize: 6 },
   { id: "hard-kaling", name: "Hard Kaling", difficulty: "Hard", imageUrl: "/bosses/bg/kaling.png", bgUrl: "/bosses/bg/kaling.png", gifUrl: "/bosses/gif/kaling.gif", maxPartySize: 6 },
   { id: "chaos-kalos", name: "Chaos Kalos", difficulty: "Chaos", imageUrl: "/bosses/bg/kalos.png", bgUrl: "/bosses/bg/kalos.png", gifUrl: "/bosses/gif/kalos.gif", maxPartySize: 6 },
