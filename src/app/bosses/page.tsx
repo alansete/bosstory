@@ -40,16 +40,16 @@ export default async function BossesPage() {
             <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
 
-            <div className="absolute bottom-0 left-0 right-0 p-3">
-              <h3 className="text-sm font-semibold text-white tracking-tight">
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-3">
+              <h3 className="text-lg sm:text-xl font-bold text-white tracking-tight drop-shadow-lg">
                 {boss.name}
               </h3>
-              <div className="flex items-center gap-2 mt-0.5">
-                <span className={`text-[11px] font-semibold ${diffColor[boss.difficulty] || "text-white/50"}`}>
+              <div className="flex items-center gap-2 mt-1">
+                <span className={`text-xs font-semibold ${diffColor[boss.difficulty] || "text-white/50"}`}>
                   {boss.difficulty}
                 </span>
                 {boss.parties.length > 0 && (
-                  <span className="text-[11px] text-white/30 font-mono">
+                  <span className="text-xs text-white/40 font-mono">
                     {boss.parties.length} {boss.parties.length === 1 ? "party" : "parties"}
                   </span>
                 )}
