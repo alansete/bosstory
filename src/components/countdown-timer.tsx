@@ -1,20 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Timer } from "@phosphor-icons/react";
 
 function getTimeLeft(target: Date) {
-  const now = new Date();
-  const diff = target.getTime() - now.getTime();
-
+  const diff = target.getTime() - Date.now();
   if (diff <= 0) return null;
-
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-  const minutes = Math.floor((diff / (1000 * 60)) % 60);
+  const days = Math.floor(diff / 86400000);
+  const hours = Math.floor((diff / 3600000) % 24);
+  const minutes = Math.floor((diff / 60000) % 60);
   const seconds = Math.floor((diff / 1000) % 60);
-
-  return { days, hours, minutes, seconds, total: diff };
+  return { days, hours, minutes, seconds };
 }
 
 export function CountdownTimer({ targetDate }: { targetDate: string }) {
@@ -23,44 +18,31 @@ export function CountdownTimer({ targetDate }: { targetDate: string }) {
   );
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const id = setInterval(() => {
       setTimeLeft(getTimeLeft(new Date(targetDate)));
     }, 1000);
-    return () => clearInterval(interval);
+    return () => clearInterval(id);
   }, [targetDate]);
 
   if (!timeLeft) {
     return (
-      <div className="flex items-center gap-1.5 text-foreground text-sm font-mono">
-        <Timer weight="bold" className="size-3.5" />
-        <span>Run time!</span>
-      </div>
+      <span className="text-sm font-mono text-white/70">
+        Run time!
+      </span>
     );
   }
 
   return (
-    <div className="flex items-center gap-3 mt-2">
-      <Timer weight="bold" className="size-3.5 text-zinc-500" />
-      <div className="flex items-center gap-1 font-mono text-sm">
-        {timeLeft.days > 0 && (
-          <span className="text-zinc-300">
-            {timeLeft.days}
-            <span className="text-zinc-600 text-xs">d</span>
-          </span>
-        )}
-        <span className="text-zinc-300">
-          {String(timeLeft.hours).padStart(2, "0")}
-          <span className="text-zinc-600 text-xs">h</span>
-        </span>
-        <span className="text-zinc-300">
-          {String(timeLeft.minutes).padStart(2, "0")}
-          <span className="text-zinc-600 text-xs">m</span>
-        </span>
-        <span className="text-zinc-300">
-          {String(timeLeft.seconds).padStart(2, "0")}
-          <span className="text-zinc-600 text-xs">s</span>
-        </span>
-      </div>
-    </div>
+    <span className="font-mono text-sm text-white/60">
+      {timeLeft.days > 0 && (
+        <>{timeLeft.days}<span className="text-white/25">d </span></>
+      )}
+      {String(timeLeft.hours).padStart(2, "0")}
+      <span className="text-white/25">h </span>
+      {String(timeLeft.minutes).padStart(2, "0")}
+      <span className="text-white/25">m </span>
+      {String(timeLeft.seconds).padStart(2, "0")}
+      <span className="text-white/25">s</span>
+    </span>
   );
 }

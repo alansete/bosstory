@@ -72,6 +72,8 @@ model Boss {
   name         String
   difficulty   String
   imageUrl     String
+  bgUrl        String?
+  gifUrl       String?
   maxPartySize Int     @default(6)
   parties      Party[]
 }
