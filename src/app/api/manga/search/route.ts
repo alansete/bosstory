@@ -20,8 +20,11 @@ export async function GET(req: NextRequest) {
     "contentRating[]": "safe",
     "order[relevance]": "desc",
   });
-  // Add suggestive as second content rating
   params.append("contentRating[]", "suggestive");
+  // Include manga available in Spanish and English
+  params.append("availableTranslatedLanguage[]", "es-la");
+  params.append("availableTranslatedLanguage[]", "es");
+  params.append("availableTranslatedLanguage[]", "en");
 
   const res = await fetch(`${API}/manga?${params}`, {
     headers: { "User-Agent": "BossStory/1.0" },
@@ -44,7 +47,10 @@ export async function GET(req: NextRequest) {
         m.attributes.title["ja-ro"] ||
         Object.values(m.attributes.title)[0] ||
         "Untitled",
-      description: m.attributes.description?.en?.slice(0, 200) || "",
+      description:
+        m.attributes.description?.es?.slice(0, 200) ||
+        m.attributes.description?.en?.slice(0, 200) ||
+        "",
       status: m.attributes.status,
       year: m.attributes.year,
       coverUrl: coverFile
