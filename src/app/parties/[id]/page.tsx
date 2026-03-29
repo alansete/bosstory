@@ -33,7 +33,7 @@ export default async function PartyDetailPage({
   const canSchedule = isCreator && (!party.scheduledDate || isCompleted);
 
   const memberCharIds = party.members.map((m) => m.characterId);
-  const availableCharacters = session?.user
+  const availableCharacters = isCreator
     ? await prisma.character.findMany({
         where: { id: { notIn: memberCharIds.length > 0 ? memberCharIds : ["_"] } },
         include: { user: true },
@@ -164,7 +164,7 @@ export default async function PartyDetailPage({
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Add member */}
-            {session?.user && !isFull && (
+            {isCreator && !isFull && (
               <div className="rounded-lg bg-black/40 border border-white/8 backdrop-blur-sm p-4">
                 <h3 className="text-xs font-medium text-white/40 uppercase tracking-widest mb-3">
                   Add member
