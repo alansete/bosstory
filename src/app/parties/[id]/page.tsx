@@ -153,42 +153,40 @@ export default async function PartyDetailPage({
                 <p className="text-sm text-white/30">No members yet.</p>
               </div>
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 {party.members.map((m) => (
                   <div
                     key={m.id}
-                    className="group/m relative rounded-lg bg-black/40 border border-white/8 backdrop-blur-sm p-4 flex flex-col items-center text-center hover:border-white/15 transition-all"
+                    className="group/m relative rounded-lg bg-black/40 border border-white/8 backdrop-blur-sm p-5 flex flex-col items-center text-center hover:border-white/20 transition-all"
                   >
-                    {/* Character avatar - BIG */}
-                    <div className="relative w-full aspect-square max-w-[120px] mb-3 flex items-center justify-center">
+                    {/* Character avatar */}
+                    <div className="relative h-36 sm:h-44 w-full mb-4 flex items-center justify-center">
                       {m.character.imageUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={m.character.imageUrl}
                           alt={m.character.name}
-                          className="h-full object-contain drop-shadow-[0_0_12px_rgba(255,255,255,0.1)]"
+                          className="h-full object-contain drop-shadow-[0_4px_20px_rgba(255,255,255,0.08)]"
                         />
                       ) : (
-                        <div className="size-20 rounded-full bg-white/10 flex items-center justify-center">
-                          <span className="text-2xl font-bold font-mono text-white/60">
+                        <div className="size-24 rounded-full bg-white/10 flex items-center justify-center">
+                          <span className="text-3xl font-bold font-mono text-white/60">
                             {m.character.level}
                           </span>
                         </div>
                       )}
                     </div>
 
-                    {/* Name */}
-                    <p className="font-semibold text-white text-sm tracking-tight truncate w-full">
+                    <p className="font-semibold text-white text-base tracking-tight truncate w-full">
                       {m.character.name}
                     </p>
-                    <p className="text-xs text-white/40 mt-0.5">
+                    <p className="text-sm text-white/50 mt-1">
                       Lv.{m.character.level} {m.character.className}
                     </p>
-                    <p className="text-[10px] text-white/20 mt-0.5">
+                    <p className="text-xs text-white/25 mt-0.5">
                       {m.character.world} / {m.character.user.name}
                     </p>
 
-                    {/* Kick */}
                     {isCreator && (
                       <div className="absolute top-2 right-2">
                         <KickMemberButton
@@ -205,7 +203,7 @@ export default async function PartyDetailPage({
                 {Array.from({ length: party.boss.maxPartySize - party.members.length }).map((_, i) => (
                   <div
                     key={`empty-${i}`}
-                    className="rounded-lg border border-dashed border-white/8 p-4 flex flex-col items-center justify-center min-h-[180px]"
+                    className="rounded-lg border border-dashed border-white/8 p-5 flex flex-col items-center justify-center min-h-[260px]"
                   >
                     <div className="size-12 rounded-full border border-dashed border-white/10 flex items-center justify-center mb-2">
                       <span className="text-white/15 text-lg">+</span>

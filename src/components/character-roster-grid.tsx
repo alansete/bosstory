@@ -71,40 +71,46 @@ export function CharacterRosterGrid({
           <p className="text-sm text-muted-foreground">No matches.</p>
         </div>
       ) : (
-        <div className="divide-y divide-border">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {filtered.map((char) => (
-            <div key={char.id} className="flex items-center gap-4 py-3">
-              <div className="size-9 shrink-0 rounded-md bg-muted overflow-hidden flex items-center justify-center">
+            <div
+              key={char.id}
+              className="rounded-lg border border-border bg-card overflow-hidden hover:border-foreground/15 transition-colors"
+            >
+              <div className="h-32 bg-muted flex items-center justify-center overflow-hidden">
                 {char.imageUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={char.imageUrl} alt="" className="h-8 object-contain" />
+                  <img src={char.imageUrl} alt="" className="h-28 object-contain" />
                 ) : (
-                  <span className="text-xs font-mono font-bold text-muted-foreground">{char.level}</span>
+                  <span className="text-3xl font-bold font-mono text-muted-foreground">{char.level}</span>
                 )}
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
+              <div className="p-3">
+                <div className="flex items-center gap-1.5">
                   <span className="text-sm font-medium truncate">{char.name}</span>
-                  <span className="text-xs font-mono text-muted-foreground">
-                    {char.level}
-                  </span>
+                  <span className="text-xs font-mono text-muted-foreground shrink-0">{char.level}</span>
                 </div>
-                <div className="text-xs text-muted-foreground">
-                  {char.className} &middot; {char.world} &middot; {char.ownerName}
-                </div>
-              </div>
-              <div className="hidden sm:flex items-center gap-1">
-                {char.parties.map((p) => (
-                  <Link
-                    key={p.id}
-                    href={`/parties/${p.id}`}
-                    className="size-5 rounded overflow-hidden opacity-50 hover:opacity-100 transition-opacity"
-                    title={p.bossName}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={p.bossImage} alt="" className="w-full h-full object-cover" />
-                  </Link>
-                ))}
+                <p className="text-xs text-muted-foreground mt-0.5 truncate">
+                  {char.className} &middot; {char.world}
+                </p>
+                <p className="text-[11px] text-muted-foreground/60 mt-0.5">
+                  {char.ownerName}
+                </p>
+                {char.parties.length > 0 && (
+                  <div className="mt-2 pt-2 border-t border-border flex flex-wrap gap-1.5">
+                    {char.parties.map((p) => (
+                      <Link
+                        key={p.id}
+                        href={`/parties/${p.id}`}
+                        className="size-5 rounded overflow-hidden opacity-60 hover:opacity-100 transition-opacity"
+                        title={p.bossName}
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={p.bossImage} alt="" className="w-full h-full object-cover" />
+                      </Link>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           ))}

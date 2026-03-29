@@ -21,67 +21,71 @@ export default async function MyCharactersPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
-      <div className="flex items-baseline justify-between mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight">Characters</h1>
-        <span className="text-xs font-mono text-muted-foreground">{characters.length}</span>
-      </div>
+      <h1 className="text-2xl font-semibold tracking-tight mb-8">Characters</h1>
 
       <AddCharacterForm />
 
       {characters.length === 0 ? (
         <div className="mt-8 py-20 rounded-lg border border-dashed border-border text-center">
           <p className="text-sm text-muted-foreground">
-            Search for a character above to add it to your roster.
+            Search for a character above to add it.
           </p>
         </div>
       ) : (
-        <div className="mt-8 divide-y divide-border">
+        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {characters.map((char) => (
             <div
               key={char.id}
-              className="group flex items-center gap-4 py-3 first:pt-0"
+              className="group relative rounded-lg border border-border bg-card overflow-hidden hover:border-foreground/15 transition-colors"
             >
-              {/* Avatar */}
-              <div className="size-10 shrink-0 rounded-md bg-muted overflow-hidden flex items-center justify-center">
+              {/* Avatar area */}
+              <div className="relative h-40 bg-muted flex items-center justify-center overflow-hidden">
                 {char.imageUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={char.imageUrl} alt="" className="h-9 object-contain" />
+                  <img
+                    src={char.imageUrl}
+                    alt={char.name}
+                    className="h-32 object-contain drop-shadow-lg"
+                  />
                 ) : (
-                  <span className="text-xs font-mono font-bold text-muted-foreground">{char.level}</span>
+                  <span className="text-4xl font-bold font-mono text-muted-foreground">
+                    {char.level}
+                  </span>
                 )}
-              </div>
-
-              {/* Name + meta */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium truncate">{char.name}</span>
-                  <span className="text-xs text-muted-foreground">Lv.{char.level}</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <span>{char.className}</span>
-                  <span className="text-border">|</span>
-                  <span>{char.world}</span>
+                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <DeleteCharacterButton characterId={char.id} characterName={char.name} />
                 </div>
               </div>
 
-              {/* Parties */}
-              <div className="hidden sm:flex items-center gap-1.5">
-                {char.partyMembers.map((pm) => (
-                  <Link
-                    key={pm.id}
-                    href={`/parties/${pm.party.id}`}
-                    className="size-6 rounded overflow-hidden opacity-60 hover:opacity-100 transition-opacity"
-                    title={pm.party.boss.name}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={pm.party.boss.imageUrl} alt={pm.party.boss.name} className="w-full h-full object-cover" />
-                  </Link>
-                ))}
-              </div>
+              {/* Info */}
+              <div className="p-4">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="font-semibold text-base">{char.name}</span>
+                  <span className="text-xs font-mono text-muted-foreground">Lv.{char.level}</span>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  {char.className} &middot; {char.world}
+                </p>
 
-              {/* Delete */}
-              <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                <DeleteCharacterButton characterId={char.id} characterName={char.name} />
+                {char.partyMembers.length > 0 && (
+                  <div className="mt-3 pt-3 border-t border-border flex flex-wrap gap-2">
+                    {char.partyMembers.map((pm) => (
+                      <Link
+                        key={pm.id}
+                        href={`/parties/${pm.party.id}`}
+                        className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={pm.party.boss.bgUrl || pm.party.boss.imageUrl}
+                          alt=""
+                          className="size-5 rounded object-cover"
+                        />
+                        {pm.party.boss.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           ))}
