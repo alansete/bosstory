@@ -18,38 +18,12 @@ export async function PATCH(
   if (!party) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
-  if (party.creatorId !== session.user.id) {
-    return NextResponse.json(
-      { error: "Only the creator can modify this party" },
-      { status: 403 }
-    );
-  }
 
   const updateData: Record<string, unknown> = {};
 
-  if (body.scheduledDate !== undefined) {
-    if (party.scheduledDate && !party.completedAt && body.scheduledDate) {
-      return NextResponse.json(
-        { error: "Complete the current run before scheduling a new one" },
-        { status: 400 }
-      );
-    }
-    updateData.scheduledDate = body.scheduledDate
-      ? new Date(body.scheduledDate)
-      : null;
-    if (body.scheduledDate) {
-      updateData.completedAt = null;
-    }
-  }
-
-  if (body.completeRun) {
-    if (!party.scheduledDate) {
-      return NextResponse.json(
-        { error: "No run scheduled to complete" },
-        { status: 400 }
-      );
-    }
-    updateData.completedAt = new Date();
+  // Toggle completed
+  if (body.toggleComplete !== undefined) {
+    updateData.completedAt = party.completedAt ? null : new Date();
   }
 
   const updated = await prisma.party.update({
@@ -75,14 +49,7 @@ export async function DELETE(
   if (!party) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
-  if (party.creatorId !== session.user.id) {
-    return NextResponse.json(
-      { error: "Only the creator can delete this party" },
-      { status: 403 }
-    );
-  }
 
-  // Delete members first, then party
   await prisma.partyMember.deleteMany({ where: { partyId: id } });
   await prisma.party.delete({ where: { id } });
 

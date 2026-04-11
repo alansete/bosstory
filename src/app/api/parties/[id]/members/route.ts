@@ -30,13 +30,6 @@ export async function POST(
     return NextResponse.json({ error: "Party not found" }, { status: 404 });
   }
 
-  if (party.creatorId !== session.user.id) {
-    return NextResponse.json(
-      { error: "Only the party creator can add members" },
-      { status: 403 }
-    );
-  }
-
   if (party.members.length >= party.boss.maxPartySize) {
     return NextResponse.json({ error: "Party is full" }, { status: 400 });
   }

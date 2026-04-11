@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -31,7 +30,6 @@ export function CreatePartyDialog({ bosses }: { bosses: BossOption[] }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [selectedBoss, setSelectedBoss] = useState("");
-  const [scheduleDate, setScheduleDate] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function handleCreate() {
@@ -44,12 +42,7 @@ export function CreatePartyDialog({ bosses }: { bosses: BossOption[] }) {
       const res = await fetch("/api/parties", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          bossId: selectedBoss,
-          scheduledDate: scheduleDate
-            ? new Date(scheduleDate).toISOString()
-            : undefined,
-        }),
+        body: JSON.stringify({ bossId: selectedBoss }),
       });
       if (!res.ok) {
         const data = await res.json();
@@ -59,7 +52,6 @@ export function CreatePartyDialog({ bosses }: { bosses: BossOption[] }) {
       toast.success("Party created!");
       setOpen(false);
       setSelectedBoss("");
-      setScheduleDate("");
       router.push(`/parties/${party.id}`);
     } catch (err) {
       toast.error(
@@ -72,7 +64,7 @@ export function CreatePartyDialog({ bosses }: { bosses: BossOption[] }) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className="inline-flex shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground text-sm font-medium h-8 px-2.5 hover:bg-primary/80 transition-colors">
+      <DialogTrigger className="inline-flex shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground text-sm font-medium h-8 px-2.5 hover:bg-primary/80 transition-colors active:scale-[0.97]">
         Create Party
       </DialogTrigger>
       <DialogContent>
@@ -99,22 +91,10 @@ export function CreatePartyDialog({ bosses }: { bosses: BossOption[] }) {
             </Select>
           </div>
 
-          <div className="space-y-2">
-            <Label>Schedule (optional)</Label>
-            <Input
-              type="datetime-local"
-              value={scheduleDate}
-              onChange={(e) => setScheduleDate(e.target.value)}
-            />
-            <p className="text-xs text-muted-foreground">
-              You can set or change the schedule later
-            </p>
-          </div>
-
           <Button
             onClick={handleCreate}
             disabled={!selectedBoss || loading}
-            className="w-full"
+            className="w-full active:scale-[0.97]"
           >
             {loading ? "Creating..." : "Create Party"}
           </Button>

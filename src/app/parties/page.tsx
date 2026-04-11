@@ -2,12 +2,16 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { runWeeklyReset } from "@/lib/weekly-reset";
 import { CreatePartyDialog } from "@/components/create-party-dialog";
-import { ScheduleInline } from "@/components/schedule-inline";
+import { ToggleCompleteButton } from "@/components/toggle-complete-button";
+import { Check } from "@phosphor-icons/react/dist/ssr";
 
 export default async function MyPartiesPage() {
   const session = await auth();
   if (!session?.user) redirect("/login");
+
+  await runWeeklyReset();
 
   const userCharIds = (
     await prisma.character.findMany({
@@ -51,9 +55,12 @@ export default async function MyPartiesPage() {
       ) : (
         <div className="divide-y divide-border">
           {parties.map((party) => {
-            const isCreator = party.creatorId === session.user!.id;
+            const isCompleted = !!party.completedAt;
             return (
               <div key={party.id} className="flex items-center gap-4 py-4">
+                {/* Check */}
+                <ToggleCompleteButton partyId={party.id} isCompleted={isCompleted} />
+
                 {/* Boss thumb */}
                 <Link
                   href={`/parties/${party.id}`}
@@ -68,28 +75,24 @@ export default async function MyPartiesPage() {
                   <div className="flex items-center gap-2">
                     <Link
                       href={`/parties/${party.id}`}
-                      className="text-sm font-medium hover:underline truncate"
+                      className={`text-sm font-medium hover:underline truncate ${isCompleted ? "line-through text-muted-foreground" : ""}`}
                     >
                       {party.boss.name}
                     </Link>
                     <span className="text-xs text-muted-foreground">
                       {party.boss.difficulty}
                     </span>
-                    {isCreator && (
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
-                        Creator
-                      </span>
-                    )}
                   </div>
                   <div className="flex items-center gap-3 mt-0.5">
                     <span className="text-xs font-mono text-muted-foreground">
                       {party.members.length}/{party.boss.maxPartySize}
                     </span>
-                    <ScheduleInline
-                      partyId={party.id}
-                      isCreator={isCreator}
-                      currentSchedule={party.scheduledDate?.toISOString() || null}
-                    />
+                    {isCompleted && (
+                      <span className="text-xs text-emerald-500 flex items-center gap-1">
+                        <Check weight="bold" className="size-3" />
+                        Cleared
+                      </span>
+                    )}
                   </div>
                 </div>
 

@@ -18,13 +18,6 @@ export async function DELETE(
     return NextResponse.json({ error: "Party not found" }, { status: 404 });
   }
 
-  if (party.creatorId !== session.user.id) {
-    return NextResponse.json(
-      { error: "Only the party creator can kick members" },
-      { status: 403 }
-    );
-  }
-
   const member = await prisma.partyMember.findUnique({
     where: { id: memberId },
   });
